@@ -54,4 +54,4 @@ Aims to be compatible with any mod, including Sodium, Iris, etc. However, there 
 
 [3] Currently does not support Fabulous graphics
 
-[4] soon...
+[
