@@ -1,6 +1,5 @@
 package dev.zelo.renderscale.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.platform.Window;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import dev.zelo.renderscale.Constants;
@@ -10,8 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 
 @Mixin(Window.class)
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
@@ -28,23 +27,19 @@ public abstract class MixinWindow {
 
     @Shadow public abstract int getGuiScaledHeight();
 
-    @ModifyReturnValue(method = "getWidth", at = @At("RETURN"))
+    @Redirect(method = "getWidth", at = @At("RETURN"))
     private int renderScale$scaleWidth(int original) {
         return renderScale$scale(original);
     }
 
-    @ModifyReturnValue(method = "getHeight", at = @At("RETURN"))
+    @Redirect(method = "getHeight", at = @At("RETURN"))
     private int renderScale$scaleHeight(int original) {
         return renderScale$scale(original);
     }
 
-    // TODO: Is this neoforge only?
-    @ModifyReturnValue(method = "getGuiScale", at = @At("RETURN"))
-    //? >= 1.21.6 {
+    // 1.20.1 中 getGuiScale 返回 int，因此统一用 int
+    @Redirect(method = "getGuiScale", at = @At("RETURN"))
     private int renderScale$modifyGuiScale(int original) {
-    //?} else
-    //private double renderScale$modifyGuiScale(double original) {
-        // It's NeoForges' fault for this null check
         return RenderScale.getInstance() == null ? original : (int) (original * RenderScale.getInstance().getCurrentScaleFactor());
     }
 
@@ -76,4 +71,4 @@ public abstract class MixinWindow {
             return value;
         }
     }
-}
+    }
