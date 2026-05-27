@@ -2,27 +2,29 @@ package dev.zelo.renderscale.mixin;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.TextureUtil;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import dev.zelo.renderscale.RenderScale;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = RenderTarget.class, priority = 99999)
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public abstract class MixinRenderTarget {
 
-    // 修复关键：为 @Redirect 添加 require = 0，使其在目标方法不存在时优雅跳过，避免崩溃
-    @Redirect(method = "setFilterMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texParameter(III)V"), require = 0)
-    private void onSetTexFilter(int target, int pname, int param) {
-        GlStateManager._texParameter(target, pname, RenderScale.getConfig().getFilter() ? GL11.GL_LINEAR : GL11.GL_NEAREST);
-    }
+    @Shadow
+    public abstract int getColorTextureId();
 
-    // Sodium 兼容性修复
-    @ModifyVariable(method = "blitToScreen(IIZ)V", at = @At("HEAD"), index = 3)
-    private boolean x(boolean y) {
-        return false;
+    @Inject(method = "bindWrite", at = @At("HEAD"))
+    private void onBindWrite(boolean p_166098_, CallbackInfo ci) {
+        if (RenderScale.getConfig() == null) return;
+        // 当RenderTarget被绑定时，检查玩家配置并应用指定的纹理过滤
+        int filter = RenderScale.getConfig().getFilter() ? GL11.GL_LINEAR : GL11.GL_NEAREST;
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter);
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter);
     }
 }
