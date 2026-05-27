@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.moulberry.mixinconstraints)
     jarJar(libs.moulberry.mixinconstraints)
 
+    // MixinExtras for Forge (fixes @ModifyReturnValue)
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+
     modApi("me.shedaniel.cloth:cloth-config-forge:${property("deps.cloth_config")}") {
         exclude("net.fabricmc.fabric-api")
     }
@@ -201,6 +204,110 @@ stonecutter {
 //        prop("deps.neoform") { neoFormVersion = it }
 //        prop("deps.neoforge") { neoForgeVersion = it }
 //        prop("deps.mcp") { mcpVersion = it }
+////        enable {
+////        }
+//
+//        // Configures client and server runs for MDG, it is not done by default
+//        defaultRuns(server = false)
+//
+//        // https://projects.neoforged.net/neoforged/neoforge
+////        neoForgeVersion = "21.1.216"
+//
+//
+////        accessTransformers.from(rootProject.file("./src/main/resources/accesstransformers/1.21.cfg"))
+//        // This block configures the `neoforge` extension that MDG exposes by default,
+//        // you can configure MDG like normal from here
+//        configureNeoForge {
+////            accessTransformers.from(rootProject.file("./src/main/resources/accesstransformers/1.21.cfg"))
+//
+//            runs.all {
+//                disableIdeRun()
+//            }
+//        }
+//
+//        tasks.named("stonecutterGenerate") {
+//            dependsOn("createMinecraftArtifacts")
+//        }
+//
+//
+//    }
+//
+//    mixin {
+//        // You do not need to specify mixins in any mods.json/toml file if this is set to
+//        // true, it will automatically be generated.
+//        addMixinsToModManifest = true
+//
+//        configs.register("renderscale")
+//
+//        // Most of the time you wont ever need loader specific mixins.
+//        // If you do, simply make the mixin file and add it like so for the respective loader:
+//        // if (isLoom) configs.register("examplemod-fabric")
+//        // if (isModDevGradleRegular) configs.register("examplemod-neoforge")
+//        // if (isModDevGradleLegacy) configs.register("examplemod-forge")
+//    }
+//}
+//
+//// Stonecutter constants for mod loaders.
+//// See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
+//stonecutter {
+//    constants {
+//        val loader: String = current.project.substringAfter('-')
+//        /* Same as
+//           put("fabric", loader == "fabric")
+//           put("forge", loader == "forge")
+//           put("neoforge", loader == "neoforge")*/
+//        match(loader, "fabric", "forge", "neoforge")
+//        put("vanilla", false)
+//    }
+//}
+//
+//
+//// All dependencies should be specified through modstitch's proxy configuration.
+//// Wondering where the "repositories" block is? Go to "stonecutter.gradle.kts"
+//// If you want to create proxy configurations for more source sets, such as client source sets,
+//// use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
+//dependencies {
+//    // Fabric only
+//    modstitch.loom {
+////        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}+${property("deps.minecraft")}")
+//
+//
+//        // Mod menu
+//        modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+//
+//        // config API for mod menu
+////        modstitchModImplementation("me.shedaniel.cloth:cloth-config-fabric:${property("deps.cloth_config")}") {
+////            exclude("net.fabricmc.fabric-api")
+////        }
+//
+//        modstitchModCompileOnly("maven.modrinth:iris:${property("deps.iris")}+${property("deps.minecraft")}-fabric")
+//    }
+//
+//    modstitch.moddevgradle {
+//        if (modstitch.isModDevGradleLegacy) {
+//            // forge
+//                modstitchModImplementation("me.shedaniel.cloth:cloth-config-forge:${property("deps.cloth_config")}") {
+//                    exclude("net.fabricmc.fabric-api")
+//                }
+//        } else {
+//            modstitchModCompileOnly("maven.modrinth:iris:${property("deps.iris")}+${property("deps.minecraft")}-fabric")
+//
+//            modstitchModImplementation("me.shedaniel.cloth:cloth-config-neoforge:${property("deps.cloth_config")}") {
+//                exclude("net.fabricmc.fabric-api")
+//            }
+//        }
+//    }
+//
+//    // TODO: This wont work for 1.20.1 forge
+//    // For iris related compatibility
+//
+//
+//    // Anything else in the dependencies block will be used for all platforms.
+//}
+//
+//tasks.withType<JavaCompile> {
+//    dependsOn("stonecutterGenerate")
+//}on = it }
 ////        enable {
 ////        }
 //
