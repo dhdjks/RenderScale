@@ -66,8 +66,8 @@ dependencies {
     implementation(libs.moulberry.mixinconstraints)
     jarJar(libs.moulberry.mixinconstraints)
 
-    // MixinExtras for Forge (fixes @ModifyReturnValue)
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+    annotationProcessor("io.github.llamalad7:mixinextras-forge:0.4.1")   // 关键添加
 
     modApi("me.shedaniel.cloth:cloth-config-forge:${property("deps.cloth_config")}") {
         exclude("net.fabricmc.fabric-api")
