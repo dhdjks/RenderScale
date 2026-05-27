@@ -10,24 +10,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-// TODO: Change priority
 @Mixin(value = RenderTarget.class, priority = 99999)
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public abstract class MixinRenderTarget {
-    @Redirect(method = "setFilterMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texParameter(III)V"))
+
+    // 修复关键：为 @Redirect 添加 require = 0，使其在目标方法不存在时优雅跳过，避免崩溃
+    @Redirect(method = "setFilterMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texParameter(III)V"), require = 0)
     private void onSetTexFilter(int target, int pname, int param) {
         GlStateManager._texParameter(target, pname, RenderScale.getConfig().getFilter() ? GL11.GL_LINEAR : GL11.GL_NEAREST);
     }
 
-//    @ModifyArgs(method = "blitToScreen(IIZ)V", at = @At("HEAD"))
-//    private void doubleResolution(Args args) {
-//        int width = args.get(0);
-//        int height = args.get(1);
-//        args.set(0, width * 2);
-//        args.set(1, height * 2);
-//    }
-
-    // Sodium fix
+    // Sodium 兼容性修复
     @ModifyVariable(method = "blitToScreen(IIZ)V", at = @At("HEAD"), index = 3)
     private boolean x(boolean y) {
         return false;
