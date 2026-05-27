@@ -12,7 +12,7 @@ platform {
         required("forge") {
             forgeVersionRange = "[1,)"
         }
-        required("cloth-config-forge") {
+        required("cloth-config") {
             forgeVersionRange = "[${prop("deps.minecraft")}]"
         }
     }
