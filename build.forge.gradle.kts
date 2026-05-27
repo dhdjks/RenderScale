@@ -12,7 +12,8 @@ platform {
         required("forge") {
             forgeVersionRange = "[1,)"
         }
-        required("cloth-config") {
+        // 修正：依赖 ID 必须与 mods.toml 中的一致，使用 "cloth_config"
+        required("cloth_config") {
             forgeVersionRange = "[${prop("deps.minecraft")}]"
         }
     }
@@ -23,13 +24,13 @@ legacyForge {
 
     validateAccessTransformers = true
 
-    accessTransformers.from(
-        rootProject.file("src/main/resources/aw/${stonecutter.current.version}.cfg")
-    )
-    // 添加下面这一行，加载 META-INF 下的 AT 配置
+    // 只使用 META-INF/accesstransformer.cfg，暂时注释 aw 目录下的
     accessTransformers.from(
         rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
     )
+    // accessTransformers.from(
+    //     rootProject.file("src/main/resources/aw/${stonecutter.current.version}.cfg")
+    // )
 
     runs {
         register("client") {
@@ -44,7 +45,6 @@ legacyForge {
 //            ideName = "Forge Server (${stonecutter.active?.version})"
 //        }
     }
-
 
     mods {
         register(prop("mod.id")) {
@@ -70,8 +70,9 @@ dependencies {
     implementation(libs.moulberry.mixinconstraints)
     jarJar(libs.moulberry.mixinconstraints)
 
-    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
-    annotationProcessor("io.github.llamalad7:mixinextras-forge:0.4.1")
+    // MixinExtras 可选，但如果你不使用 @ModifyReturnValue 可以不要
+    // implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+    // annotationProcessor("io.github.llamalad7:mixinextras-forge:0.4.1")
 
     modApi("me.shedaniel.cloth:cloth-config-forge:${property("deps.cloth_config")}") {
         exclude("net.fabricmc.fabric-api")
