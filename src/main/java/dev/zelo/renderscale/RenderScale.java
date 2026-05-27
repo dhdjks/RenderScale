@@ -98,7 +98,14 @@ public class RenderScale {
     }
 
     public void setClientRenderTarget(RenderTarget renderTarget) {
-        client.mainRenderTarget = renderTarget;
+        // 使用反射绕过 final 限制（Forge 兼容）
+        try {
+            java.lang.reflect.Field field = net.minecraft.client.Minecraft.class.getDeclaredField("mainRenderTarget");
+            field.setAccessible(true);
+            field.set(client, renderTarget);
+        } catch (Exception e) {
+            Constants.LOG.error("Failed to set mainRenderTarget", e);
+        }
     }
 
     public void setShouldScale(boolean shouldScale) {
